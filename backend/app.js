@@ -11,15 +11,15 @@ const organizationRoutes = require("./routes/organizationRoutes");
 const app = express();
 
 // Allowed frontend origins
+// Allowed frontend origins
 const allowedOrigins = [
     "http://localhost:5173",
-    process.env.FRONTEND_URL
-].filter(Boolean);
+    "https://stockflow-inventory-management-jx2m.vercel.app"
+];
 
 // CORS configuration
 app.use(cors({
     origin: (origin, callback) => {
-        // Allow requests without an Origin header (e.g. Postman)
         if (!origin || allowedOrigins.includes(origin)) {
             return callback(null, true);
         }
@@ -30,7 +30,6 @@ app.use(cors({
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: false
 }));
-
 app.use(express.json());
 
 // Health check
