@@ -1,3 +1,4 @@
+
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
@@ -9,7 +10,27 @@ const organizationRoutes = require("./routes/organizationRoutes");
 
 const app = express();
 
-app.use(cors());
+// Allowed frontend origins
+const allowedOrigins = [
+    "http://localhost:5173",
+    process.env.FRONTEND_URL
+].filter(Boolean);
+
+// CORS configuration
+app.use(cors({
+    origin: (origin, callback) => {
+        // Allow requests without an Origin header (e.g. Postman)
+        if (!origin || allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+
+        return callback(new Error(`CORS blocked origin: ${origin}`));
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: false
+}));
+
 app.use(express.json());
 
 // Health check
@@ -25,6 +46,5 @@ app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/organization", organizationRoutes);
-
 
 module.exports = app;
